@@ -1,0 +1,14 @@
+.tasks{
+    display: flex;
+    gap:"10px"
+}
+.App{
+    margin-left:20%;
+    margin-top: 20px;
+}
+.input{
+    width:"60%";
+    display: flex;
+    margin  :20px;
+    justify-content: space-around;
+}
