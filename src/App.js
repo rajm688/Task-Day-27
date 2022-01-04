@@ -4,7 +4,9 @@ import CardContent from "@mui/material/CardContent";
 import Button from "@mui/material/Button";
 import TextField from "@mui/material/TextField";
 import Card from "@mui/material/Card";
-
+import CancelIcon from '@mui/icons-material/Cancel';
+import { IconButton } from "@mui/material";
+import Typography from '@mui/material/Typography';
 export default function App() {
   const originalList = [
     { name: "Create theme", active: false },
@@ -12,23 +14,6 @@ export default function App() {
     { name: "Organize office main department", active: false },
     { name: "Error solve in HTML template", active: false }
   ];
-
-  const getAll = () => {
-    updateList(defaultList);
-    console.log(defaultList);
-  };
-
-  const getActive = () => {
-    const filtered = defaultList.filter((todo) => !todo.active);
-    console.log("filtered", filtered);
-    updateList(defaultList.filter((todo) => !todo.active));
-  };
-
-  const getCompleted = () => {
-    const filtered = defaultList.filter((todo) => todo.active);
-    console.log("completed", filtered);
-    updateList(defaultList.filter((todo) => todo.active));
-  };
   const [defaultList, setDefaultList] = useState(originalList);
   const [list, updateList] = useState(originalList);
   const [task, setTask] = useState("");
@@ -76,15 +61,25 @@ export default function App() {
           </Button>
           </div>
           <CardActions>
-            <Button variant="outlined" size="small" onClick={getAll}>
+            <div style={{width:"100%",display:"flex", gap:"10%", justifyContent:"space-evenly"}}>
+            <Button variant="contained" onClick={() => {
+    updateList(defaultList);
+    console.log(defaultList);
+  }}>
               All
             </Button>
-            <Button variant="outlined" size="small" onClick={getActive}>
+            <Button variant="contained" onClick={ () => {
+    updateList(defaultList.filter((todo) => !todo.active));
+  }}>
               Active
             </Button>
-            <Button variant="outlined" size="small" onClick={getCompleted}>
+            <Button variant="contained" onClick={ () => {
+    updateList(defaultList.filter((todo) => todo.active));
+  }}>
               Completed
             </Button>
+            </div>
+
           </CardActions>
           {list.map((item, index) => {
             return (
@@ -95,14 +90,16 @@ export default function App() {
                   checked = {item.active}
                   onChange={(event) => toggleTask(event, index)}
                 />
-                <label className="strikethrough">{item.name}</label>
-
-                <Button
+                  <Typography style={{display:"inline", textDecoration: item.active==true ? "line-through":""}} variant="body1" gutterBottom component="div">
+                  {item.name}
+      </Typography>
+              
+                <IconButton
                   name={item.name}
                   onClick={() => handleRemoveItem(index)}
                 >
-                  ❌
-                </Button>
+                 <CancelIcon color="warning"/>
+                 </IconButton>
               </div>
             );
           })}
