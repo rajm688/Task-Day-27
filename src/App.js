@@ -1,79 +1,113 @@
-import "./App.css";
-import { useState } from "react";
-import * as React from "react";
-import Card from "@mui/material/Card";
-import TextField from "@mui/material/TextField";
+import React, { useState } from "react";
+import CardActions from "@mui/material/CardActions";
+import CardContent from "@mui/material/CardContent";
 import Button from "@mui/material/Button";
-import Checkbox from "@mui/material/Checkbox";
+import TextField from "@mui/material/TextField";
+import Card from "@mui/material/Card";
+
 export default function App() {
-  const [state, setstate] = useState(" ");
-  const [list, setlist] = useState([
-    "Create theme",
-    "Work on wordpress",
-    "Organize office main department",
-    "Error solve in HTML template",
-  ]);
-  console.log(state);
-  console.log(list);
+  const originalList = [
+    { name: "Create theme", active: false },
+    { name: "Work on wordpress", active: false },
+    { name: "Organize office main department", active: false },
+    { name: "Error solve in HTML template", active: false }
+  ];
+
+  const getAll = () => {
+    updateList(defaultList);
+    console.log(defaultList);
+  };
+
+  const getActive = () => {
+    const filtered = defaultList.filter((todo) => !todo.active);
+    console.log("filtered", filtered);
+    updateList(defaultList.filter((todo) => !todo.active));
+  };
+
+  const getCompleted = () => {
+    const filtered = defaultList.filter((todo) => todo.active);
+    console.log("completed", filtered);
+    updateList(defaultList.filter((todo) => todo.active));
+  };
+  const [defaultList, setDefaultList] = useState(originalList);
+  const [list, updateList] = useState(originalList);
+  const [task, setTask] = useState("");
+
+  const toggleTask = (e, index) => {
+    const newTasks = [...defaultList];
+    newTasks[index].active = e.target.checked === true ? true : false;
+    setDefaultList(newTasks);
+    updateList(newTasks);
+  };
+
+  const handleRemoveItem = (index) => {
+    const newTasks = [...list];
+    newTasks.splice(index, 1);
+    updateList(newTasks);
+  };
+
   return (
-    <div className="App">
-      <Card sx={{ width: "80%", padding: "10px" }}>
-        <div className="input">
+    <div className="task-list">
+      <Card id="card">
+        <CardContent>
+          <div className="inputfield">
           <TextField
-            style={{ width: "60%" }}
-            onChange={(e) => setstate(e.target.value)}
-            id="outlined-basic"
-            label="New Task"
-            variant="outlined"
+            label="New Task..."
+            style={{
+              width: "90%",
+              height: "10%",
+              margin: "0px 8px",
+              paddingLeft: "5px"
+            }}
+            value={task}
+            className="text"
+            onChange={(event) => setTask(event.target.value)}
           />
           <Button
-            style={{ width: "30%" }}
-            onClick={() => setlist([...list, state])}
-            variant="contained"
+            className="btn"
+            variant="outlined"
+            onClick={() => {
+              const newTask = { name: task, active: true };
+              console.log(newTask);
+              updateList([...list, newTask]);
+            }}
           >
-            ADD
+            Add Task
           </Button>
-        </div>
-        <div className="taks">
-          {list.map((item) => (
-            <Tasks item={item} />
-          ))}
-        </div>
-      </Card>
-    </div>
-  );
-}
+          </div>
+          <CardActions>
+            <Button variant="outlined" size="small" onClick={getAll}>
+              All
+            </Button>
+            <Button variant="outlined" size="small" onClick={getActive}>
+              Active
+            </Button>
+            <Button variant="outlined" size="small" onClick={getCompleted}>
+              Completed
+            </Button>
+          </CardActions>
+          {list.map((item, index) => {
+            return (
+              <div className="todo-item">
+                <input
+                  type="checkbox"
+                  className="check"
+                  checked = {item.active}
+                  onChange={(event) => toggleTask(event, index)}
+                />
+                <label className="strikethrough">{item.name}</label>
 
-function Tasks({ item }) {
-  const label = { inputProps: { "aria-label": "Checkbox demo" } };
-  const [state, setstate] = useState("false");
-  // console.log(state)
-  return (
-    <div>
-      <Card sx={{ width: "90%", padding: "10px", margin: "auto" }}>
-        <Checkbox
-          onChange={() => setstate(state === "on" ? "off" : "on")}
-          {...label}
-        />
-        <span
-          style={{ textDecoration: state === "on" ? "line-through" : "none" }}
-        >
-          {item}
-        </span>
+                <Button
+                  name={item.name}
+                  onClick={() => handleRemoveItem(index)}
+                >
+                  ❌
+                </Button>
+              </div>
+            );
+          })}
+        </CardContent>
       </Card>
-      <br />
-      <Archive item={item} state={state} />
-    </div>
-  );
-}
-function Archive(props) {
-  console.log("inArchive", props);
-  // const archiveditems = props.filter(({state})=> state== false)
-  // console.log("archiveditems",archiveditems)
-  return (
-    <div>
-      <Card sx={{ width: "90%", padding: "10px", margin: "auto" }}></Card>
-      <br />
     </div>
   );
 }
