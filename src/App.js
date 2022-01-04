@@ -90,7 +90,7 @@ export default function App() {
                   checked = {item.active}
                   onChange={(event) => toggleTask(event, index)}
                 />
-                  <Typography style={{display:"inline", textDecoration: item.active==true ? "line-through":""}} variant="body1" gutterBottom component="div">
+                  <Typography style={{display:"inline", textDecoration: item.active===true ? "line-through":""}} variant="body1" gutterBottom component="div">
                   {item.name}
       </Typography>
               
